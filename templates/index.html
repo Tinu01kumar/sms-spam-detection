@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Spam Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .hero {
+            width: 100%;
+            height: auto;
+        }
+
+        .feedback-box {
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .feedback-box label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Button 87 styles */
+        .button-87 {
+            margin: 10px;
+            padding: 15px 30px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            display: inline-block;
+            border: 0px;
+            font-weight: 700;
+            box-shadow: 0px 0px 14px -7px #f09819;
+            background-image: linear-gradient(45deg, #FF512F 0%, #F09819 51%, #FF512F 100%);
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .button-87:hover {
+            background-position: right center;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .button-87:active {
+            transform: scale(0.95);
+        }
+
+        .predict {
+            align-items: center;
+            appearance: none;
+            background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+            border: 0;
+            border-radius: 6px;
+            box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+            box-sizing: border-box;
+            color: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            font-family: "JetBrains Mono", monospace;
+            height: 48px;
+            justify-content: center;
+            line-height: 1;
+            list-style: none;
+            overflow: hidden;
+            padding-left: 16px;
+            padding-right: 16px;
+            position: relative;
+            text-align: left;
+            text-decoration: none;
+            transition: box-shadow .15s, transform .15s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            will-change: box-shadow, transform;
+            font-size: 18px;
+        }
+
+        .predict:focus {
+            box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+        }
+
+        .predict:hover {
+            box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+            transform: translateY(-2px);
+        }
+
+        .predict:active {
+            box-shadow: #3c4fe0 0 3px 7px inset;
+            transform: translateY(2px);
+        }
+
+        .feedback-button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: white;
+            border: none;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .feedback-button.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .feedback-message {
+            display: none;
+            margin: 20px 10%;
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border-radius: 5px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .model-select {
+            margin-top: 20px;
+        }
+
+        .model-select label {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .model-select select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        .predict {
+            margin-top: 30px;
+            marign-bottom: 20px;
+        }
+
+        /* Loader styles */
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading1">SMS Spam Detection</div>
+        <div>
+            <img class="hero" src="{{url_for('static',filename='image/images.png')}}" alt="Hero Image">
+        </div>
+
+        <div class="hero1">
+            <form id="prediction-form" method="post" action="/predict">
+                <p class="heading2">Enter the message</p>
+                <textarea class="textarea" name="content" id="content" placeholder="Write something..">{{content}}</textarea>
+                <div class="model-select">
+                    <label for="model">Choose a model:</label>
+                    <select name="model" id="model">
+                        <option value="LR_model.pkl">Logistic Regression</option>
+                        <option value="KN_model.pkl">KNN</option>
+                        <option value="mnb_clf_model.pkl">MultinomialNB</option>
+                        <option value="bnb_clf_model.pkl">Bernoulli Naive Bayes</option>
+                        <option value="gnb_clf_model.pkl">Gaussian Naive Bayes</option>
+                        <option value="DT_model.pkl">DecisionTree</option>
+                        <option value="RF_model.pkl">RandomForest</option>
+                        <option value="AdaBoost_model.pkl">AdaBoost</option>
+                        <option value="voting_clf_model.pkl">Voting</option>
+                    </select>
+                </div>
+                <button type="submit" class="button-87 predict" value="predict">Predict</button>
+            </form>
+        </div>
+
+        <div class="loader" id="loader"></div>
+
+        <div class="output">
+            {% if ans %}
+            {% if ans == "spam" %}
+            {% if spam_probability >= 50 %}
+            <p>This message is <span style="color:red">spam</span> with a probability of {{ spam_probability }}%</p>
+            {% else %}
+            <p>This message is <span style="color:green">spam</span> with a probability of {{ spam_probability }}%</p>
+            {% endif %}
+            {% elif ans == "ham" %}
+            <p>This message is <span style="color: #5cb85c">not spam</span></p>
+            {% endif %}
+
+            <div class="feedback-box" id="feedback-box">
+                <form id="feedback-form" method="post" action="/feedback">
+                    <p style="margin-bottom:10px">Is this prediction correct?</p>
+                    <!-- Use buttons instead of radio buttons -->
+                    <button type="button" class="feedback-button" data-value="correct">Yes</button>
+                    <button type="button" class="feedback-button" data-value="incorrect">No</button>
+                    <!-- Hidden input fields -->
+                    <input type="hidden" name="user_feedback" id="user_feedback_input">
+                    <input type="hidden" name="content" value="{{ content }}">
+                    <input type="hidden" name="prediction_result" value="{{ ans }}">
+                    <input type="hidden" name="spam_probability" value="{{ spam_probability }}">
+                    <button type="submit" class="button-87" id="submit-feedback">Submit Feedback</button>
+                </form>
+            </div>
+            <div class="feedback-message" id="feedback-message">Thank you for your feedback!</div>
+            {% endif %}
+        </div>
+    </div>
+
+   <script>
+    document.getElementById('prediction-form').addEventListener('submit', function(event) {
+        document.getElementById('loader').style.display = 'block';
+    });
+
+    var feedbackButtons = document.querySelectorAll('.feedback-button');
+
+    feedbackButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            document.getElementById('user_feedback_input').value = this.getAttribute('data-value');
+            feedbackButtons.forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+
+    document.getElementById('submit-feedback').addEventListener('click', function(event) {
+        event.preventDefault();
+        var feedbackForm = document.getElementById('feedback-form');
+        var feedbackValue = document.getElementById('user_feedback_input').value;
+
+        if (feedbackValue === 'incorrect') {
+         document.getElementById('loader').style.display = 'block';
+            var formData = new FormData(feedbackForm);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/feedback', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    document.getElementById('feedback-box').style.display = 'none';
+                    document.getElementById('feedback-message').style.display = 'block';
+                    // Hide loader after feedback submission is completed
+                    document.getElementById('loader').style.display = 'none';
+                }
+            };
+            xhr.send(formData);
+        } else {
+            document.getElementById('feedback-box').style.display = 'none';
+            document.getElementById('feedback-message').style.display = 'block';
+            // Hide loader after feedback submission is completed
+            document.getElementById('loader').style.display = 'none';
+        }
+    });
+
+    // Hide loader when the output is displayed
+    window.addEventListener('load', function() {
+        document.getElementById('loader').style.display = 'none';
+    });
+</script>
+
+
+
+    <footer style="text-align:center; margin-top:10px;">
+        copyright© 2024
+    </footer>
+</body>
+
+</html>

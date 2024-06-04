@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Spam Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Resetting default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .hero {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Body styling */
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Heading styling */
+        .heading1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        /* Form styling */
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .textarea {
+            padding: 10px;
+            width: 100%;
+            height: 100px;
+            margin-bottom: 20px;
+            outline: 2px solid white;
+            background-color: transparent;
+            color: white;
+        }
+
+        .textarea::placeholder {
+            color: white;
+        }
+
+        .buttonpredict button {
+            padding: 10px 30px;
+            background-color: aqua;
+            color: black;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .buttonpredict button:hover {
+            background-color: red;
+            color: white;
+        }
+
+        /* Output styling */
+        .output {
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .feedback-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .feedback-box label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .feedback-box input[type="submit"] {
+            padding: 10px 30px;
+            background-color: aqua;
+            color: black;
+            font-size: 1rem;
+            border: none;
+            border-radius: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-box input[type="submit"]:hover {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading1">SMS Spam Detection</div>
+        <img class="hero" src="{{url_for('static',filename='image/images.png')}}" alt="Hero Image">
+      <div class="hero1">
+        <form method="post" action="/predict">
+            <p class="heading2">Enter the message</p>
+            <textarea class="textarea" name="content" id="content" placeholder="Write something..">{{content}}</textarea>
+            <div class="buttonpredict">
+                <button type="submit" value="predict">Predict</button>
+            </div>
+        </form>
+    </div>
+
+        <div class="output">
+    {% if ans %}
+        {% if ans == "spam" %}
+            {% if spam_probability >= 50 %}
+                <p>This message is <span style="color:red">spam</span> with a probability of {{ spam_probability }}%</p>
+            {% else %}
+                <p>This message is <span style="color:green">spam</span> with a probability of {{ spam_probability }}%</p>
+            {% endif %}
+        {% elif ans == "ham" %}
+            <p>This message is not spam</p>
+        {% endif %}
+
+        <!-- Feedback section -->
+        <div class="feedback-box">
+            <form method="post" action="/feedback">
+                <p>Was this prediction correct?</p>
+                <label><input type="radio" name="user_feedback" value="correct"> Yes</label>
+                <label><input type="radio" name="user_feedback" value="incorrect"> No</label>
+                <input type="hidden" name="content" value="{{ content }}">
+                <input type="hidden" name="prediction_result" value="{{ ans }}">
+                <input type="hidden" name="spam_probability" value="{{ spam_probability }}">
+                <input type="submit" value="Submit Feedback">
+            </form>
+        </div>
+    {% endif %}
+</div>
+
+    </div>
+</body>
+
+</html>
