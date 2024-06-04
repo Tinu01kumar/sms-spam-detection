@@ -15,17 +15,17 @@ ps = PorterStemmer()
 # Load vectorizer and models
 tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
 models = {
-     "LR_model.pkl": pickle.load(open('LR_model.pkl', 'rb')),
-     "KN_model.pkl": pickle.load(open('KN_model.pkl', 'rb')),
-
-     "mnb_clf_model.pkl": pickle.load(open('mnb_clf_model.pkl', 'rb')),
-     "gnb_clf_model.pkl": pickle.load(open('gnb_clf_model.pkl', 'rb')),
-     "bnb_clf_model.pkl": pickle.load(open('bnb_clf_model.pkl', 'rb')),
+     # "LR_model.pkl": pickle.load(open('LR_model.pkl', 'rb')),
+     # "KN_model.pkl": pickle.load(open('KN_model.pkl', 'rb')),
+     #
+     # "mnb_clf_model.pkl": pickle.load(open('mnb_clf_model.pkl', 'rb')),
+     # "gnb_clf_model.pkl": pickle.load(open('gnb_clf_model.pkl', 'rb')),
+     # "bnb_clf_model.pkl": pickle.load(open('bnb_clf_model.pkl', 'rb')),
      "DT_model.pkl": pickle.load(open('DT_model.pkl', 'rb')),
-     "RF_model.pkl": pickle.load(open('RF_model.pkl', 'rb')),
-     "AdaBoost_model.pkl": pickle.load(open('AdaBoost_model.pkl', 'rb')),
-     "BgC_model.pkl": pickle.load(open('BgC_model.pkl', 'rb')),
-     "ETC_model.pkl": pickle.load(open('ETC_model.pkl', 'rb')),
+     # "RF_model.pkl": pickle.load(open('RF_model.pkl', 'rb')),
+     # "AdaBoost_model.pkl": pickle.load(open('AdaBoost_model.pkl', 'rb')),
+     # "BgC_model.pkl": pickle.load(open('BgC_model.pkl', 'rb')),
+     # "ETC_model.pkl": pickle.load(open('ETC_model.pkl', 'rb')),
 
 
 
